@@ -17,12 +17,13 @@ def train_kans():
     hidden_dim_kan = 2 * input_dim + 1  # Change this for different architectures!
     hidden_dim_kan_trunk = 2 * input_dim_trunk + 1
     output_dim = 50
-    num_epochs = 10000
-    learning_rate = 1e-4
-    num_samples = 10000
+    num_epochs = 5000
+    learning_rate = 5e-4
+    num_samples = 1000
+    num_val_samples = 100
     num_points = input_dim
 
-    batch_size = 64
+    batch_size = 256
     num_batches = num_samples // batch_size
 
     # Check if GPU is available
@@ -57,9 +58,13 @@ def train_kans():
     plt.yscale('log')
     plt.title('Model Loss Comparison')
 
-    # Generate data and move to the appropriate device
+    # Generate training data and move to the appropriate device
     x_train, y_train, z_train = generate_data(num_samples, num_points)
     x_train, y_train, z_train = x_train.to(device), y_train.to(device), z_train.to(device)
+
+    # Generate validation data and move to the appropriate device
+    x_val, y_val, z_val = generate_data(num_val_samples, num_points)
+    x_val, y_val, z_val = x_train.to(device), y_train.to(device), z_train.to(device)
 
     onets = [mlp_onet, kan_onet, cheby_onet, jacobi_onet, leg_onet]
 
@@ -67,12 +72,16 @@ def train_kans():
         print(f"Training {onet.label}.")
         criterion = nn.MSELoss()
         optimizer = optim.Adam(onet.parameters(), lr=learning_rate)
-        losses = []
+        losses = []; val_losses = []
         train_dataset = TensorDataset(x_train, y_train, z_train)
         train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_dataset = TensorDataset(x_val, y_val, z_val)
+        val_dataloader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
         for e in range(num_epochs):
+            onet.train() #adding this along with the .eval() later in case we include layernorm, dropout etc in any models.
             epoch_losses = []
+            epoch_val_losses = []
             for x, y, z in train_dataloader:
                 x, y, z = x.to(device), y.to(device), z.to(device)
 
@@ -91,6 +100,21 @@ def train_kans():
             losses.append(mean_loss)
             if (e + 1) % 100 == 0:
                 print(f'Epoch [{e + 1}/{num_epochs}], Loss: {mean_loss:.5f}')
+            
+            #Validation mode.
+            onet.eval() #see comment above regarding the train and validation modes.
+            for x, y, z in val_dataloader:
+                x, y, z = x.to(device), y.to(device), z.to(device)
+                with torch.no_grad():
+                    val_output = onet(x,y)
+                    val_loss = criterion(val_output, z)
+                    epoch_val_losses.append(val_loss.detach().cpu().numpy())
+
+                epoch_val_losses.append(val_loss)
+            mean_val_loss = np.mean(epoch_val_losses)
+            val_losses.append(mean_val_loss)
+            
+
 
         # Plot the losses for each model
         plt.plot(np.arange(num_epochs), losses, label=onet.label)
