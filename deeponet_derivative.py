@@ -35,16 +35,16 @@ class BranchNet(nn.Module):
 
 #Define a similar class for a branch network using KANs
 class KANBranchNet(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, modeltype='original_kan'):
+    def __init__(self, input_dim, hidden_dim, output_dim, modeltype='original_kan', layernorm=None):
         super(KANBranchNet, self).__init__()
         if modeltype=='original_kan':
             self.branch = kan.KAN(width=[input_dim, hidden_dim, output_dim], grid=5, k=3, seed=0)
         elif modeltype=='cheby_kan':
-            self.branch = GeneralChebyKAN(layer_dims=[input_dim, hidden_dim, output_dim]) #default degree 4
+            self.branch = GeneralChebyKAN(layer_dims=[input_dim, hidden_dim, output_dim], norm=layernorm) #default degree 4
         elif modeltype=='jacobi_kan':
-            self.branch = GeneralJacobiKAN(layer_dims=[input_dim, hidden_dim, output_dim]) #def deg 4
+            self.branch = GeneralJacobiKAN(layer_dims=[input_dim, hidden_dim, output_dim], norm=layernorm) #def deg 4
         elif modeltype=='legendre_kan':
-            self.branch = GeneralLegendreKAN(layer_dims=[input_dim, hidden_dim, output_dim]) #def deg 4
+            self.branch = GeneralLegendreKAN(layer_dims=[input_dim, hidden_dim, output_dim], norm=layernorm) #def deg 4
         else:
             self.branch = efficient_kan.KAN(layers_hidden = [input_dim] + [hidden_dim]*1 + [output_dim])
 
@@ -75,16 +75,16 @@ class TrunkNet(nn.Module):
 
 #Define a similar class again for a trunk network using KANs
 class KANTrunkNet(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, modeltype='original_kan'):
+    def __init__(self, input_dim, hidden_dim, output_dim, modeltype='original_kan', layernorm=None):
         super(KANTrunkNet, self).__init__()
         if modeltype == 'original_kan':
             self.trunk = kan.KAN(width=[input_dim, hidden_dim, output_dim], grid=5, k=3, seed=0)
         elif modeltype=='cheby_kan':
-            self.trunk = GeneralChebyKAN(layer_dims=[input_dim, hidden_dim, output_dim]) #default degree 4
+            self.trunk = GeneralChebyKAN(layer_dims=[input_dim, hidden_dim, output_dim], norm=layernorm) #default degree 4
         elif modeltype=='jacobi_kan':
-            self.trunk = GeneralJacobiKAN(layer_dims=[input_dim, hidden_dim, output_dim]) #def deg 4
+            self.trunk = GeneralJacobiKAN(layer_dims=[input_dim, hidden_dim, output_dim], norm=layernorm) #def deg 4
         elif modeltype=='legendre_kan':
-            self.trunk = GeneralLegendreKAN(layer_dims=[input_dim, hidden_dim, output_dim]) #def deg 4
+            self.trunk = GeneralLegendreKAN(layer_dims=[input_dim, hidden_dim, output_dim], norm=layernorm) #def deg 4
         else:
             self.trunk = efficient_kan.KAN(layers_hidden = [input_dim] + [hidden_dim]*1 + [output_dim])
 

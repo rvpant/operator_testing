@@ -32,7 +32,7 @@ class LegendreKANLayer(nn.Module):
         
         
 class GeneralLegendreKAN(nn.Module):
-    def __init__(self, layer_dims, degree=4):
+    def __init__(self, layer_dims, degree=4, norm=False):
         """
         layer_dims: List of integers representing the dimensions of each layer.
                     e.g., [input_dim, hidden_dim1, hidden_dim2, ..., output_dim]
@@ -45,7 +45,7 @@ class GeneralLegendreKAN(nn.Module):
 
         for i in range(len(layer_dims) - 1):
             self.layers.append(LegendreKANLayer(layer_dims[i], layer_dims[i + 1], degree))
-            if i < len(layer_dims) - 2:  
+            if norm and (i < len(layer_dims) - 2):  
                 self.norm_layers.append(nn.LayerNorm(layer_dims[i + 1]))
 
     def forward(self, x):

@@ -72,6 +72,7 @@ def train_kans():
         print(f"Training {onet.label}.")
         criterion = nn.MSELoss()
         optimizer = optim.Adam(onet.parameters(), lr=learning_rate)
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
         losses = []; val_losses = []
         train_dataset = TensorDataset(x_train, y_train, z_train)
         train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -110,11 +111,10 @@ def train_kans():
                     val_loss = criterion(val_output, z)
                     epoch_val_losses.append(val_loss.detach().cpu().numpy())
 
-                epoch_val_losses.append(val_loss)
             mean_val_loss = np.mean(epoch_val_losses)
             val_losses.append(mean_val_loss)
             
-
+            scheduler.step()
 
         # Plot the losses for each model
         plt.plot(np.arange(num_epochs), losses, label=onet.label)
