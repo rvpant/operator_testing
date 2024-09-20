@@ -34,11 +34,13 @@ input_dim_trunk = 1
 hidden_dim = 100
 hidden_dim_kan = 2*input_dim + 1 #Change this for different architectures!
 output_dim = 50
-num_epochs = int(5e3)
-learning_rate = 1e-3
-num_samples = 1000
+num_epochs = 10000
+learning_rate = 5e-4
+num_samples = 10000
 num_val_samples = num_samples // 10
-num_points = 50
+num_points = input_dim
+
+batch_size = 256
 
 #Define the output directory for the loss plots.
 output_dir = './hyperparam_tuning'
@@ -103,8 +105,8 @@ x_train, y_train, z_train = generate_data(num_samples, num_points)
 x_val, y_val, z_val = generate_data(num_val_samples, num_points)
 train_data = TensorDataset(x_train, y_train, z_train)
 val_data = TensorDataset(x_val, y_val, z_val)
-train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True)
-val_dataloader = DataLoader(val_data, batch_size=64, shuffle=False)
+train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+val_dataloader = DataLoader(val_data, batch_size=batch_size, shuffle=False)
 
 
 if model == "MLP":
