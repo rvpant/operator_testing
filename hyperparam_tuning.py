@@ -94,7 +94,6 @@ def train_model(model, train_dl, val_dl, n_epochs, learning_rate):
                 val_loss = criterion(val_output, z)
                 epoch_val_losses.append(val_loss.detach().cpu().numpy())
 
-            epoch_val_losses.append(val_loss)
         mean_val_loss = np.mean(epoch_val_losses)
         val_losses.append(mean_val_loss)
 
