@@ -12,7 +12,7 @@ from deeponet_derivative import generate_data, DeepONet, BranchNet, TrunkNet, KA
 def train_kans():
     # Hyperparameters
     input_dim = 50  # Number of points in the function
-    input_dim_trunk = 1  # Trunk net input size.
+    input_dim_trunk = 1  # Trunk net input size.a
     hidden_dim = 100
     hidden_dim_kan = 2 * input_dim + 1  # Change this for different architectures!
     hidden_dim_kan_trunk = 2 * input_dim_trunk + 1
@@ -110,7 +110,6 @@ def train_kans():
                     val_loss = criterion(val_output, z)
                     epoch_val_losses.append(val_loss.detach().cpu().numpy())
 
-                epoch_val_losses.append(val_loss)
             mean_val_loss = np.mean(epoch_val_losses)
             val_losses.append(mean_val_loss)
             
