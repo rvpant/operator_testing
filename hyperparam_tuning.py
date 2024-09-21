@@ -139,13 +139,16 @@ if model == "MLP":
                 ax[1].plot(range(num_epochs), val_losses, label=f'{onet.label}_{activation}_hidden{dim}_{lr}')
                 torch.save(onet, f'{output_dir}/{onet.label}_{activation}_hidden{dim}_{lr}_{problem}.pt')
                 if np.mean(val_losses[(len(val_losses)//2):]) < min_loss:
-                    torch.save(onet, f'{output_dir}/best_MLP_model_{activation}_hidden{dim}_{lr}_{problem}.pt')
+                    # torch.save(onet, f'{output_dir}/best_MLP_model_{activation}_hidden{dim}_{lr}_{problem}.pt')
+                    torch.save(onet, f'{output_dir}/best_MLP_model.pt')
                     best_model = f'{onet.label}_{activation}_hidden{dim}_{lr}_{problem}'
                     
     ax[0].legend(loc='best')
     ax[1].legend(loc='best')
     f.savefig(f'{output_dir}/{model}_hyperparam_tuning.png')
     print(f"Best MLP model is {best_model}.")
+    with open("best_mlp.txt", "w") as write_version:
+        write_version.write("Best MLP model is {}".format(best_model))
                 
 elif model == 'efficient':
 
@@ -180,13 +183,16 @@ elif model == 'efficient':
                 ax[1].plot(range(num_epochs), val_losses, label=f'{onet.label}_hidden{dim}_hidden_trunk_{trunk_dim}_{lr}')
                 torch.save(onet, f'{output_dir}/{onet.label}_hidden{dim}_hidden_trunk_{trunk_dim}_{lr}.pt')
                 if np.mean(val_losses[(len(val_losses)//2):]) < min_loss:
-                    torch.save(onet, f'{output_dir}/best_efficientKAN_model_hidden{dim}_trunk{trunk_dim}_{lr}_{problem}.pt')
+                    # torch.save(onet, f'{output_dir}/best_efficientKAN_model_hidden{dim}_trunk{trunk_dim}_{lr}_{problem}.pt')
+                    torch.save(onet, f"{output_dir}/best_efficient_KAN_model.pt")
                     best_model = f'{onet.label}_hidden{dim}_trunk{trunk_dim}_{lr}_{problem}'
 
     ax[0].legend(loc='best')
     ax[1].legend(loc='best')
     f.savefig(f'{output_dir}/{model}_hyperparam_tuning.png')
     print(f"Best efficientKAN model is {best_model}.")
+    with open("best_efficient_kan.txt", "w") as write_version:
+        write_version.write("Best efficient KAN model is {}".format(best_model))
 
 elif model == 'cheby':
 
@@ -221,13 +227,16 @@ elif model == 'cheby':
                     ax[1].plot(val_losses, label=f'{onet.label}_hidden{dim}_degree{deg}_{lr}')
                     torch.save(onet, f'{output_dir}/{onet.label}_hidden{dim}_degree{deg}_{lr}.pt')
                     if np.mean(val_losses[(len(val_losses)//2):]) < min_loss:
-                        torch.save(onet, f'{output_dir}/best_chebyKAN_model_hidden{dim}_degree{deg}_{lr}_{problem}.pt')
+                        #  torch.save(onet, f'{output_dir}/best_chebyKAN_model_hidden{dim}_degree{deg}_{lr}_{problem}.pt')
+                        torch.save(onet, f"{output_dir}/best_chebyKAN_model.pt")
                         best_model = f'{onet.label}_hidden{dim}_degree{deg}_{lr}_{problem}'
 
     ax[0].legend(loc='best')
     ax[1].legend(loc='best')
     f.savefig(f'{output_dir}/{model}_hyperparam_tuning.png')
     print(f"Best chebyKAN model is {best_model}.")
+    with open("best_cheby_kan.txt", "w") as write_version:
+        write_version.write("Best chebyKAN model is {}".format(best_model))
 
 elif model == 'jacobi':
 
@@ -262,13 +271,16 @@ elif model == 'jacobi':
                     ax[1].plot(val_losses, label=f'{onet.label}_hidden{dim}_degree{deg}_{lr}')
                     torch.save(onet, f'{output_dir}/{onet.label}_hidden{dim}_degree{deg}_{lr}.pt')
                     if np.mean(val_losses[(len(val_losses)//2):]) < min_loss:
-                        torch.save(onet, f'{output_dir}/best_jacobiKAN_model_hidden{dim}_degree{deg}_{lr}_{problem}.pt')
+                        # torch.save(onet, f'{output_dir}/best_jacobiKAN_model_hidden{dim}_degree{deg}_{lr}_{problem}.pt')
+                        torch.save(onet, f"{output_dir}/best_jacobiKAN_model.pt")
                         best_model = f'{onet.label}_hidden{dim}_degree{deg}_{lr}_{problem}'
                     
     ax[0].legend(loc='best')
     ax[1].legend(loc='best')
     f.savefig(f'{output_dir}/{model}_hyperparam_tuning.png')
     print(f"Best jacobiKAN model is {best_model}.")
+    with open("best_jacobi_kan.txt", "w") as write_version:
+        write_version.write("Best jacobiKAN model is {}".format(best_model))
 
 elif model == 'legendre':
 
@@ -303,11 +315,14 @@ elif model == 'legendre':
                     ax[1].plot(val_losses, label=f'{onet.label}_hidden{dim}_degree{deg}_{lr}')
                     torch.save(onet, f'{output_dir}/{onet.label}_hidden{dim}_degree{deg}_{lr}.pt')
                     if np.mean(val_losses[(len(val_losses)//2):]) < min_loss:
-                        torch.save(onet, f'{output_dir}/best_legendreKAN_model_hidden{dim}_degree{deg}_{lr}_{problem}.pt')
+                        # torch.save(onet, f'{output_dir}/best_legendreKAN_model_hidden{dim}_degree{deg}_{lr}_{problem}.pt')
+                        torch.save(onet, f"{output_dir}/best_legendreKAN_model.pt")
                         best_model = f'{onet.label}_hidden{dim}_degree{deg}_{lr}_{problem}'
     ax[0].legend(loc='best')
     ax[1].legend(loc='best')
     f.savefig(f'{output_dir}/{model}_hyperparam_tuning.png')
     print(f"Best legendreKAN model is {best_model}.")
+    with open("best_legendre_kan.txt", "w") as write_version:
+        write_version.write("Best legendreKAN model is {}".format(best_model))
 else:
     print(f"Invalid input mode.")
