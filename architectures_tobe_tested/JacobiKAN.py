@@ -45,7 +45,7 @@ class JacobiKANLayer(nn.Module):
         return y
 
 class GeneralJacobiKAN(nn.Module):
-    def __init__(self, layer_dims, degree=4, a=1.0, b=1.0):
+    def __init__(self, layer_dims, degree=4, a=1.0, b=1.0, norm=False):
         """
         layer_dims: List of integers representing the dimensions of each layer.
                     e.g., [input_dim, hidden_dim1, hidden_dim2, ..., output_dim]
@@ -58,7 +58,7 @@ class GeneralJacobiKAN(nn.Module):
 
         for i in range(len(layer_dims) - 1):
             self.layers.append(JacobiKANLayer(layer_dims[i], layer_dims[i + 1], degree, a, b))
-            if i < len(layer_dims) - 2:  # No LayerNorm after the last layer
+            if norm and (i < len(layer_dims) - 2):  # No LayerNorm after the last layer
                 self.norm_layers.append(nn.LayerNorm(layer_dims[i + 1]))
 
     def forward(self, x):
